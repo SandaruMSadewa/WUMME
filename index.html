@@ -128,28 +128,24 @@
           id="yesBtn" 
           type="button"
           onclick="handleYesSuccess(event)" 
-          class="pulse-glow w-44 py-4 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold text-xl rounded-2xl shadow-xl active:scale-95 transition-transform duration-200 flex items-center justify-center gap-2 z-20 cursor-pointer">
+          class="pulse-glow w-44 py-4 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold text-xl rounded-2xl shadow-xl active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 z-20 cursor-pointer">
           <span>YES!</span>
           <span>💍🥰</span>
         </button>
 
-        <!-- NO Button: ONLY dodges cursor, NEVER navigates or accepts anything -->
+        <!-- NO Button: Triggers funny 'Are you sure?' confirmation flow -->
         <button 
           id="noBtn" 
           type="button"
-          onmouseenter="dodgeNo(event)"
-          onmouseover="dodgeNo(event)"
-          onpointerenter="dodgeNo(event)"
-          ontouchstart="dodgeNo(event)"
-          onclick="dodgeNo(event)"
-          class="w-44 py-4 px-6 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-base rounded-2xl shadow border border-gray-300 flex items-center justify-center gap-1 z-30 select-none cursor-pointer">
+          onclick="handleNoClick(event)"
+          class="w-44 py-4 px-6 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-base rounded-2xl shadow border-2 border-rose-200 hover:border-rose-300 flex items-center justify-center gap-1 z-10 select-none cursor-pointer transition-all duration-300">
           <span id="noBtnText">No 😢</span>
         </button>
       </div>
 
       <!-- Live Teasing Hint Box -->
       <div id="teaseBox" class="mt-4 min-h-[28px] text-xs md:text-sm font-semibold text-rose-600 italic opacity-0 transition-opacity duration-200">
-        "Oops! That button doesn't like being touched! 😜"
+        "Think carefully! Destiny has already chosen! 😉"
       </div>
     </section>
 
@@ -195,6 +191,40 @@
     </section>
 
   </main>
+
+  <!-- ARE YOU SURE? Playful Modal Popup -->
+  <div id="sureModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div class="glass-card max-w-sm w-full rounded-3xl p-6 shadow-2xl text-center border-2 border-rose-200 transform scale-95 transition-transform duration-300" id="sureModalContent">
+      <div class="w-16 h-16 mx-auto mb-3 bg-rose-100 rounded-full flex items-center justify-center text-3xl animate-pulse" id="sureModalEmoji">
+        🥺
+      </div>
+      <h3 id="sureModalTitle" class="text-2xl font-black text-rose-600 mb-2">
+        Are you sure? 🤔
+      </h3>
+      <p id="sureModalMessage" class="text-gray-600 text-sm md:text-base font-medium mb-6">
+        Think about all the ice cream, love, and forehead kisses you'd be missing!
+      </p>
+
+      <div class="flex flex-col gap-3">
+        <!-- Big Green Accept from inside modal -->
+        <button 
+          type="button"
+          onclick="handleModalYes()" 
+          class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold rounded-2xl shadow-lg hover:shadow-emerald-300/50 active:scale-95 transition flex items-center justify-center gap-2 text-base">
+          <span>Okay fine, YES! 💖</span>
+        </button>
+
+        <!-- Pleading / Stubborn No Button -->
+        <button 
+          type="button"
+          id="modalStillNoBtn"
+          onclick="handleStillNo(event)" 
+          class="w-full py-2.5 bg-gray-100 hover:bg-rose-50 text-gray-600 hover:text-rose-600 text-xs font-semibold rounded-xl border border-gray-200 transition active:scale-95">
+          <span id="modalStillNoText">I still want to say no 😢</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <script>
     // Audio synthesizer for fun sound effects without external dependencies
@@ -268,25 +298,39 @@
     let partnerName = 'Sweetheart';
     let escapeCount = 0;
     let yesScale = 1.0;
+    let noScale = 1.0;
 
-    const phrases = [
-      "No 😢",
-      "Are you sure? 🤔",
-      "Think again! 😜",
-      "Wrong button! 😂",
-      "Can't touch this! 💨",
-      "Try again! 🏃",
-      "Error: No not found! ❌",
-      "Just click YES! 🥰",
-      "Destiny says YES! ✨"
-    ];
-
-    const teasers = [
-      "Oops! That button is too fast! 💨",
-      "Nice try! But you can't click No! 😜",
-      "Look, the YES button is getting bigger! ❤️",
-      "There is literally no escape from my love! 💍",
-      "Give up and hit that big green YES button! 🥰"
+    const pleadingList = [
+      {
+        title: "Are you sure? 🤔",
+        emoji: "🥺",
+        msg: "Think again! Think of all the pizza dates, cuddles, and late-night talks! 🍕✨",
+        stillNoText: "Still thinking about saying no... 🙄"
+      },
+      {
+        title: "Are you REALLY sure? 💔",
+        emoji: "😭",
+        msg: "Don't break my little heart! Look at that shiny green YES button waiting for you!",
+        stillNoText: "I'm being stubborn 🙈"
+      },
+      {
+        title: "Have you lost your mind? 😂",
+        emoji: "🧐",
+        msg: "I come with unlimited hugs, free backrubs, and bad jokes 24/7. That's a lifetime deal!",
+        stillNoText: "Give me one more second..."
+      },
+      {
+        title: "System Error: 'No' is Invalid! 🚫",
+        emoji: "🤖",
+        msg: "Our love algorithm detected 100% soulmate compatibility. Saying 'No' is mathematically forbidden!",
+        stillNoText: "Can I just say maybe?"
+      },
+      {
+        title: "Final Warning! 💍✨",
+        emoji: "🚨",
+        msg: "Resistance is futile! The YES button is taking over the screen now!",
+        stillNoText: "Uhh... okay..."
+      }
     ];
 
     function handleNameSubmit(event) {
@@ -308,56 +352,85 @@
       setTimeout(() => step2.classList.remove('opacity-0'), 30);
     }
 
-    // THE RUNAWAY LOGIC:
-    // This ONLY moves the No button away. It NEVER finishes the proposal.
-    let debounceTimer = null;
-    function dodgeNo(e) {
+    // Opens the "Are You Sure?" Modal when clicking "No"
+    function handleNoClick(e) {
       if (e) {
         e.preventDefault();
         e.stopPropagation();
       }
 
-      const noBtn = document.getElementById('noBtn');
-      const yesBtn = document.getElementById('yesBtn');
-      const noBtnText = document.getElementById('noBtnText');
-      const teaseBox = document.getElementById('teaseBox');
+      AudioEngine.playEscapeSound();
+      showSureModal();
+    }
 
-      if (!noBtn || !yesBtn) return;
+    function showSureModal() {
+      const modal = document.getElementById('sureModal');
+      const modalContent = document.getElementById('sureModalContent');
+      const info = pleadingList[Math.min(escapeCount, pleadingList.length - 1)];
+
+      document.getElementById('sureModalTitle').innerText = info.title;
+      document.getElementById('sureModalEmoji').innerText = info.emoji;
+      document.getElementById('sureModalMessage').innerText = info.msg;
+      document.getElementById('modalStillNoText').innerText = info.stillNoText;
+
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        modalContent.classList.remove('scale-95');
+        modalContent.classList.add('scale-100');
+      }, 10);
+    }
+
+    function closeSureModal() {
+      const modal = document.getElementById('sureModal');
+      const modalContent = document.getElementById('sureModalContent');
+      modal.classList.add('opacity-0');
+      modalContent.classList.remove('scale-100');
+      modalContent.classList.add('scale-95');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 300);
+    }
+
+    // When user tries to insist on "No" inside the modal
+    function handleStillNo(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
 
       escapeCount++;
       AudioEngine.playEscapeSound();
 
-      // Switch to fixed positioning so it freely flies around viewport
-      if (!noBtn.classList.contains('btn-escaping')) {
-        noBtn.classList.add('btn-escaping');
-      }
+      // Make YES button on the main page huge and irresistible
+      const yesBtn = document.getElementById('yesBtn');
+      const noBtn = document.getElementById('noBtn');
+      const teaseBox = document.getElementById('teaseBox');
 
-      // Update funny text
-      const pIdx = Math.min(escapeCount, phrases.length - 1);
-      noBtnText.innerText = phrases[pIdx];
+      yesScale = Math.min(2.2, yesScale + 0.18);
+      noScale = Math.max(0.7, noScale - 0.08);
 
-      // Update teasing message
-      teaseBox.innerText = teasers[(escapeCount - 1) % teasers.length];
+      yesBtn.style.transform = `scale(${yesScale})`;
+      noBtn.style.transform = `scale(${noScale})`;
+
+      teaseBox.innerText = `Hint: The YES button is ${Math.round((yesScale - 1) * 100)}% more attractive now! 😉`;
       teaseBox.classList.remove('opacity-0');
 
-      // Make YES button grow bigger
-      yesScale = Math.min(1.8, yesScale + 0.08);
-      yesBtn.style.transform = `scale(${yesScale})`;
+      if (escapeCount >= pleadingList.length) {
+        // Playfully dodge the modal button or close and nudge to YES
+        closeSureModal();
+        const phrases = ["Can't say no! 💨", "Only YES allowed! 💖", "Try again! 😂", "Destiny! ✨"];
+        document.getElementById('noBtnText').innerText = phrases[Math.floor(Math.random() * phrases.length)];
+      } else {
+        showSureModal();
+      }
+    }
 
-      // Calculate safe position on screen
-      const btnWidth = noBtn.offsetWidth || 150;
-      const btnHeight = noBtn.offsetHeight || 50;
-      const margin = 20;
-
-      const maxX = window.innerWidth - btnWidth - margin;
-      const maxY = window.innerHeight - btnHeight - margin;
-
-      // Pick a new random spot
-      const randomX = Math.floor(Math.random() * (maxX - margin) + margin);
-      const randomY = Math.floor(Math.random() * (maxY - margin) + margin);
-
-      noBtn.style.left = `${Math.max(margin, randomX)}px`;
-      noBtn.style.top = `${Math.max(margin, randomY)}px`;
+    function handleModalYes() {
+      closeSureModal();
+      setTimeout(() => {
+        handleYesSuccess();
+      }, 200);
     }
 
     // STRICTLY THE ONLY HANDLER THAT MOVES TO THE SUCCESS SCREEN
@@ -368,6 +441,10 @@
       }
 
       AudioEngine.playFanfare();
+
+      // Close modal if open
+      const modal = document.getElementById('sureModal');
+      if (modal) modal.classList.add('hidden');
 
       // Remove the runaway button completely
       const noBtn = document.getElementById('noBtn');
