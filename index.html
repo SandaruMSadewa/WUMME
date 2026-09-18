@@ -26,10 +26,10 @@
         opacity: 0;
       }
       20% {
-        opacity: 0.7;
+        opacity: 0.75;
       }
       80% {
-        opacity: 0.7;
+        opacity: 0.75;
       }
       100% {
         transform: translateY(-12vh) rotate(360deg) scale(1.1);
@@ -47,24 +47,18 @@
         transform: scale(1);
       }
       50% {
-        box-shadow: 0 0 35px rgba(16, 185, 129, 0.7);
-        transform: scale(1.04);
+        box-shadow: 0 0 32px rgba(16, 185, 129, 0.75);
+        transform: scale(1.03);
       }
     }
     .pulse-glow {
       animation: pulseGlow 2s infinite ease-in-out;
     }
     .glass-card {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.7);
-    }
-    /* Smooth escape transition */
-    .btn-escaping {
-      position: fixed !important;
-      z-index: 999;
-      transition: top 0.18s cubic-bezier(0.2, 0.8, 0.3, 1), left 0.18s cubic-bezier(0.2, 0.8, 0.3, 1), transform 0.15s ease;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
     }
   </style>
 </head>
@@ -91,7 +85,7 @@
         <input 
           type="text" 
           id="partnerName" 
-          placeholder="Enter your cute name..." 
+          placeholder="Enter your name..." 
           autocomplete="off"
           required
           class="w-full px-5 py-3.5 rounded-2xl bg-white/95 border-2 border-pink-200 text-gray-800 placeholder-pink-300 font-semibold focus:outline-none focus:border-pink-500 focus:ring-4 focus:ring-pink-100 text-center text-lg transition duration-200"
@@ -99,7 +93,7 @@
 
         <button 
           type="submit" 
-          class="w-full py-3.5 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-pink-300/50 transform active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 text-lg">
+          class="w-full py-3.5 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-pink-300/50 transform active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 text-lg cursor-pointer">
           <span>Continue</span>
           <span>✨</span>
         </button>
@@ -113,43 +107,42 @@
       </div>
       
       <p class="text-xs uppercase tracking-widest text-rose-500 font-bold mb-1">A Very Special Question</p>
-      <h2 id="proposalHeadline" class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-1 leading-tight">
+      <h2 id="proposalHeadline" class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2 leading-tight">
         Will You Marry Me?
       </h2>
       <p class="text-xs md:text-sm text-pink-600 font-medium mb-6">
-        Take your time to choose carefully... (there's only one right answer 😉)
+        Choose carefully... 😉
       </p>
 
-      <!-- Action Area: Isolated from any forms -->
-      <div id="actionContainer" class="relative min-h-[160px] flex flex-col sm:flex-row items-center justify-center gap-4 py-2">
-        
-        <!-- YES Button: STRICTLY the ONLY element that can trigger the acceptance screen -->
+      <!-- Action Area -->
+      <div id="actionContainer" class="flex flex-col sm:flex-row items-center justify-center gap-4 py-2">
+        <!-- YES Button: Direct acceptance -->
         <button 
           id="yesBtn" 
           type="button"
-          onclick="handleYesSuccess(event)" 
-          class="pulse-glow w-44 py-4 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold text-xl rounded-2xl shadow-xl active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 z-20 cursor-pointer">
+          onclick="handleDirectYes(event)" 
+          class="pulse-glow w-full sm:w-44 py-4 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold text-xl rounded-2xl shadow-xl active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer">
           <span>YES!</span>
-          <span>💍🥰</span>
+          <span>💖</span>
         </button>
 
-        <!-- NO Button: Triggers funny 'Are you sure?' confirmation flow -->
+        <!-- NO Button: Triggers single-button confirmation modal -->
         <button 
           id="noBtn" 
           type="button"
           onclick="handleNoClick(event)"
-          class="w-44 py-4 px-6 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-base rounded-2xl shadow border-2 border-rose-200 hover:border-rose-300 flex items-center justify-center gap-1 z-10 select-none cursor-pointer transition-all duration-300">
-          <span id="noBtnText">No 😢</span>
+          class="w-full sm:w-44 py-4 px-6 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-base rounded-2xl shadow border-2 border-rose-200 hover:border-rose-300 flex items-center justify-center gap-1 cursor-pointer transition-all duration-300 active:scale-95">
+          <span>NO</span>
+          <span>💔</span>
         </button>
       </div>
 
-      <!-- Live Teasing Hint Box -->
-      <div id="teaseBox" class="mt-4 min-h-[28px] text-xs md:text-sm font-semibold text-rose-600 italic opacity-0 transition-opacity duration-200">
-        "Think carefully! Destiny has already chosen! 😉"
+      <div class="mt-5 min-h-[24px] text-xs md:text-sm font-semibold text-rose-600 italic">
+        "Follow your heart! 💕"
       </div>
     </section>
 
-    <!-- STEP 3: Celebration Screen (Only reachable via YES button) -->
+    <!-- STEP 3: Celebration Screen -->
     <section id="step3" class="hidden opacity-0 transition-opacity duration-500 text-center">
       <div class="relative inline-block mb-3">
         <div class="w-24 h-24 mx-auto bg-gradient-to-tr from-pink-400 to-rose-500 rounded-full flex items-center justify-center text-5xl shadow-xl animate-pulse">
@@ -166,68 +159,59 @@
       </p>
 
       <div class="bg-pink-50/95 border border-pink-200 rounded-2xl p-4 md:p-5 mb-5 text-gray-700 text-sm md:text-base leading-relaxed text-left shadow-sm">
-        <p class="font-semibold text-gray-900 mb-2 text-center text-lg" id="celebrationNameGreeting">
+        <p class="font-bold text-gray-900 mb-2 text-center text-lg" id="celebrationNameGreeting">
           Congratulations! 🥂
         </p>
-        <p class="mb-2">
-          🎉 <strong>Official Notice:</strong> You have formally and happily accepted the proposal!
+        <p id="twistNotice" class="mb-3 text-rose-600 font-bold text-center bg-rose-100/70 p-2.5 rounded-xl text-xs md:text-sm">
+          🎉 You formally and irrevocably said YES! No takebacks! Forever stuck with me! 💍❤️
         </p>
         <p class="text-rose-700 font-bold mb-2">
-          ⚠️ Terms &amp; Conditions:
+          ⚠️ Official Marriage Terms &amp; Conditions:
         </p>
-        <ul class="list-disc list-inside space-y-1 text-xs md:text-sm text-gray-600">
-          <li>No cancellations or returns 🚫</li>
-          <li>Unlimited hugs, food sharing, and endless love guaranteed 🍕❤️</li>
-          <li>You are officially stuck with me forever! 🥳💍</li>
+        <ul class="list-disc list-inside space-y-1.5 text-xs md:text-sm text-gray-600">
+          <li>No cancellations or returns allowed 🚫</li>
+          <li>Unlimited hugs, late-night snacks, and pizza dates guaranteed 🍕❤️</li>
+          <li>You are officially stuck with me forever and ever! 🥳💍</li>
         </ul>
       </div>
 
       <button 
         type="button"
         onclick="triggerMoreCelebration()" 
-        class="py-3 px-6 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-rose-400/50 active:scale-95 transition text-sm">
+        class="py-3 px-6 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-rose-400/50 active:scale-95 transition text-sm cursor-pointer">
         Click for More Celebrations! 🎊
       </button>
     </section>
 
   </main>
 
-  <!-- ARE YOU SURE? Playful Modal Popup -->
-  <div id="sureModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+  <!-- ARE YOU SURE MODAL (ONLY ONE YES BUTTON) -->
+  <div id="sureModal" class="fixed inset-0 bg-black/45 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
     <div class="glass-card max-w-sm w-full rounded-3xl p-6 shadow-2xl text-center border-2 border-rose-200 transform scale-95 transition-transform duration-300" id="sureModalContent">
-      <div class="w-16 h-16 mx-auto mb-3 bg-rose-100 rounded-full flex items-center justify-center text-3xl animate-pulse" id="sureModalEmoji">
+      <div class="w-16 h-16 mx-auto mb-3 bg-rose-100 rounded-full flex items-center justify-center text-3xl animate-bounce">
         🥺
       </div>
-      <h3 id="sureModalTitle" class="text-2xl font-black text-rose-600 mb-2">
-        Are you sure? 🤔
+      <h3 class="text-2xl font-black text-rose-600 mb-2">
+        Are you sure?
       </h3>
-      <p id="sureModalMessage" class="text-gray-600 text-sm md:text-base font-medium mb-6">
-        Think about all the ice cream, love, and forehead kisses you'd be missing!
+      <p class="text-gray-700 font-semibold text-base mb-6">
+        Are you really sure your answer is No? 🥺
       </p>
 
-      <div class="flex flex-col gap-3">
-        <!-- Big Green Accept from inside modal -->
+      <!-- The only option: Yes -->
+      <div>
         <button 
           type="button"
-          onclick="handleModalYes()" 
-          class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold rounded-2xl shadow-lg hover:shadow-emerald-300/50 active:scale-95 transition flex items-center justify-center gap-2 text-base">
-          <span>Okay fine, YES! 💖</span>
-        </button>
-
-        <!-- Pleading / Stubborn No Button -->
-        <button 
-          type="button"
-          id="modalStillNoBtn"
-          onclick="handleStillNo(event)" 
-          class="w-full py-2.5 bg-gray-100 hover:bg-rose-50 text-gray-600 hover:text-rose-600 text-xs font-semibold rounded-xl border border-gray-200 transition active:scale-95">
-          <span id="modalStillNoText">I still want to say no 😢</span>
+          onclick="handleTrickYes()" 
+          class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold rounded-2xl shadow-lg hover:shadow-emerald-300/50 active:scale-95 transition flex items-center justify-center gap-2 text-lg cursor-pointer">
+          <span>Yes</span>
         </button>
       </div>
     </div>
   </div>
 
   <script>
-    // Audio synthesizer for fun sound effects without external dependencies
+    // Audio synthesizer for fanfare and clicks
     const AudioEngine = {
       ctx: null,
       init() {
@@ -239,21 +223,21 @@
           this.ctx.resume();
         }
       },
-      playEscapeSound() {
+      playPopSound() {
         try {
           this.init();
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           const now = this.ctx.currentTime;
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(320, now);
-          osc.frequency.exponentialRampToValueAtTime(750, now + 0.1);
+          osc.frequency.setValueAtTime(400, now);
+          osc.frequency.exponentialRampToValueAtTime(700, now + 0.08);
           gain.gain.setValueAtTime(0.2, now);
-          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
           osc.start(now);
-          osc.stop(now + 0.11);
+          osc.stop(now + 0.09);
         } catch (e) {}
       },
       playFanfare() {
@@ -282,7 +266,7 @@
     function spawnBackgroundHearts() {
       const container = document.getElementById('heartContainer');
       const emojis = ['💖', '💕', '💗', '💓', '✨', '🌸', '💍'];
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 22; i++) {
         const heart = document.createElement('div');
         heart.className = 'floating-heart';
         heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
@@ -296,42 +280,6 @@
     spawnBackgroundHearts();
 
     let partnerName = 'Sweetheart';
-    let escapeCount = 0;
-    let yesScale = 1.0;
-    let noScale = 1.0;
-
-    const pleadingList = [
-      {
-        title: "Are you sure? 🤔",
-        emoji: "🥺",
-        msg: "Think again! Think of all the pizza dates, cuddles, and late-night talks! 🍕✨",
-        stillNoText: "Still thinking about saying no... 🙄"
-      },
-      {
-        title: "Are you REALLY sure? 💔",
-        emoji: "😭",
-        msg: "Don't break my little heart! Look at that shiny green YES button waiting for you!",
-        stillNoText: "I'm being stubborn 🙈"
-      },
-      {
-        title: "Have you lost your mind? 😂",
-        emoji: "🧐",
-        msg: "I come with unlimited hugs, free backrubs, and bad jokes 24/7. That's a lifetime deal!",
-        stillNoText: "Give me one more second..."
-      },
-      {
-        title: "System Error: 'No' is Invalid! 🚫",
-        emoji: "🤖",
-        msg: "Our love algorithm detected 100% soulmate compatibility. Saying 'No' is mathematically forbidden!",
-        stillNoText: "Can I just say maybe?"
-      },
-      {
-        title: "Final Warning! 💍✨",
-        emoji: "🚨",
-        msg: "Resistance is futile! The YES button is taking over the screen now!",
-        stillNoText: "Uhh... okay..."
-      }
-    ];
 
     function handleNameSubmit(event) {
       event.preventDefault();
@@ -340,11 +288,11 @@
 
       AudioEngine.init();
 
-      // Set greeting texts
+      // Set personalized strings
       document.getElementById('proposalHeadline').innerText = `${partnerName}, Will You Marry Me? 💍`;
       document.getElementById('celebrationNameGreeting').innerText = `Congratulations, ${partnerName}! 🥂❤️`;
 
-      // Switch to Step 2
+      // Transition to Step 2
       const step1 = document.getElementById('step1');
       const step2 = document.getElementById('step2');
       step1.classList.add('hidden');
@@ -352,27 +300,19 @@
       setTimeout(() => step2.classList.remove('opacity-0'), 30);
     }
 
-    // Opens the "Are You Sure?" Modal when clicking "No"
+    // Opens the modal when NO is clicked
     function handleNoClick(e) {
       if (e) {
         e.preventDefault();
         e.stopPropagation();
       }
-
-      AudioEngine.playEscapeSound();
+      AudioEngine.playPopSound();
       showSureModal();
     }
 
     function showSureModal() {
       const modal = document.getElementById('sureModal');
       const modalContent = document.getElementById('sureModalContent');
-      const info = pleadingList[Math.min(escapeCount, pleadingList.length - 1)];
-
-      document.getElementById('sureModalTitle').innerText = info.title;
-      document.getElementById('sureModalEmoji').innerText = info.emoji;
-      document.getElementById('sureModalMessage').innerText = info.msg;
-      document.getElementById('modalStillNoText').innerText = info.stillNoText;
-
       modal.classList.remove('hidden');
       setTimeout(() => {
         modal.classList.remove('opacity-0');
@@ -381,78 +321,36 @@
       }, 10);
     }
 
-    function closeSureModal() {
-      const modal = document.getElementById('sureModal');
-      const modalContent = document.getElementById('sureModalContent');
-      modal.classList.add('opacity-0');
-      modalContent.classList.remove('scale-100');
-      modalContent.classList.add('scale-95');
-      setTimeout(() => {
-        modal.classList.add('hidden');
-      }, 300);
-    }
-
-    // When user tries to insist on "No" inside the modal
-    function handleStillNo(e) {
+    // Direct YES from proposal screen
+    function handleDirectYes(e) {
       if (e) {
         e.preventDefault();
         e.stopPropagation();
       }
-
-      escapeCount++;
-      AudioEngine.playEscapeSound();
-
-      // Make YES button on the main page huge and irresistible
-      const yesBtn = document.getElementById('yesBtn');
-      const noBtn = document.getElementById('noBtn');
-      const teaseBox = document.getElementById('teaseBox');
-
-      yesScale = Math.min(2.2, yesScale + 0.18);
-      noScale = Math.max(0.7, noScale - 0.08);
-
-      yesBtn.style.transform = `scale(${yesScale})`;
-      noBtn.style.transform = `scale(${noScale})`;
-
-      teaseBox.innerText = `Hint: The YES button is ${Math.round((yesScale - 1) * 100)}% more attractive now! 😉`;
-      teaseBox.classList.remove('opacity-0');
-
-      if (escapeCount >= pleadingList.length) {
-        // Playfully dodge the modal button or close and nudge to YES
-        closeSureModal();
-        const phrases = ["Can't say no! 💨", "Only YES allowed! 💖", "Try again! 😂", "Destiny! ✨"];
-        document.getElementById('noBtnText').innerText = phrases[Math.floor(Math.random() * phrases.length)];
-      } else {
-        showSureModal();
-      }
+      document.getElementById('twistNotice').innerHTML = `🎉 You made the best decision ever, ${partnerName}! Love you forever! 💍❤️`;
+      launchCelebration();
     }
 
-    function handleModalYes() {
-      closeSureModal();
+    // Clicking the single "Yes" in the modal counts as saying YES!
+    function handleTrickYes() {
+      const modal = document.getElementById('sureModal');
+      modal.classList.add('opacity-0');
       setTimeout(() => {
-        handleYesSuccess();
+        modal.classList.add('hidden');
+      }, 200);
+
+      document.getElementById('twistNotice').innerHTML = `🎉 Gotcha! You said <strong>"YES"</strong>! No takebacks! Forever stuck with me! 💍😂❤️`;
+      setTimeout(() => {
+        launchCelebration();
       }, 200);
     }
 
-    // STRICTLY THE ONLY HANDLER THAT MOVES TO THE SUCCESS SCREEN
-    function handleYesSuccess(e) {
-      if (e) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-
+    function launchCelebration() {
       AudioEngine.playFanfare();
 
-      // Close modal if open
       const modal = document.getElementById('sureModal');
       if (modal) modal.classList.add('hidden');
 
-      // Remove the runaway button completely
-      const noBtn = document.getElementById('noBtn');
-      if (noBtn) {
-        noBtn.remove();
-      }
-
-      // Show Step 3
       const step2 = document.getElementById('step2');
       const step3 = document.getElementById('step3');
 
