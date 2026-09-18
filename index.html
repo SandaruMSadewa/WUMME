@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Will You Marry Me? ❤️</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      overflow-x: hidden;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .font-romantic {
+      font-family: 'Dancing Script', cursive;
+    }
+    @keyframes floatHeart {
+      0% {
+        transform: translateY(100vh) rotate(0deg) scale(0.6);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.7;
+      }
+      80% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(-12vh) rotate(360deg) scale(1.1);
+        opacity: 0;
+      }
+    }
+    .floating-heart {
+      position: absolute;
+      pointer-events: none;
+      animation: floatHeart linear infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 35px rgba(16, 185, 129, 0.7);
+        transform: scale(1.04);
+      }
+    }
+    .pulse-glow {
+      animation: pulseGlow 2s infinite ease-in-out;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+    /* Smooth escape transition */
+    .btn-escaping {
+      position: fixed !important;
+      z-index: 999;
+      transition: top 0.18s cubic-bezier(0.2, 0.8, 0.3, 1), left 0.18s cubic-bezier(0.2, 0.8, 0.3, 1), transform 0.15s ease;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-rose-100 via-pink-100 to-purple-200 flex items-center justify-center p-4 relative overflow-hidden">
+  
+  <!-- Floating background hearts container -->
+  <div id="heartContainer" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
+
+  <!-- Main Card -->
+  <main class="w-full max-w-md glass-card rounded-3xl p-6 md:p-8 shadow-2xl relative z-10 text-center transition-all duration-300">
+    
+    <!-- STEP 1: Name Input Screen -->
+    <section id="step1">
+      <div class="w-20 h-20 mx-auto mb-4 bg-pink-100 rounded-full flex items-center justify-center text-4xl shadow-inner animate-bounce">
+        💌
+      </div>
+      <h1 class="text-3xl font-extrabold text-pink-700 mb-2">Hey There!</h1>
+      <p class="text-gray-600 text-sm md:text-base mb-6 font-medium">
+        Before we begin, who is the loveliest person viewing this page?
+      </p>
+
+      <form id="nameForm" onsubmit="handleNameSubmit(event)" class="space-y-4">
+        <input 
+          type="text" 
+          id="partnerName" 
+          placeholder="Enter your cute name..." 
+          autocomplete="off"
+          required
+          class="w-full px-5 py-3.5 rounded-2xl bg-white/95 border-2 border-pink-200 text-gray-800 placeholder-pink-300 font-semibold focus:outline-none focus:border-pink-500 focus:ring-4 focus:ring-pink-100 text-center text-lg transition duration-200"
+        />
+
+        <button 
+          type="submit" 
+          class="w-full py-3.5 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-pink-300/50 transform active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 text-lg">
+          <span>Continue</span>
+          <span>✨</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- STEP 2: Proposal Screen -->
+    <section id="step2" class="hidden opacity-0 transition-opacity duration-300">
+      <div class="w-20 h-20 mx-auto mb-3 bg-rose-100 rounded-full flex items-center justify-center text-4xl shadow-inner">
+        💍
+      </div>
+      
+      <p class="text-xs uppercase tracking-widest text-rose-500 font-bold mb-1">A Very Special Question</p>
+      <h2 id="proposalHeadline" class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-1 leading-tight">
+        Will You Marry Me?
+      </h2>
+      <p class="text-xs md:text-sm text-pink-600 font-medium mb-6">
+        Take your time to choose carefully... (there's only one right answer 😉)
+      </p>
+
+      <!-- Action Area: Isolated from any forms -->
+      <div id="actionContainer" class="relative min-h-[160px] flex flex-col sm:flex-row items-center justify-center gap-4 py-2">
+        
+        <!-- YES Button: STRICTLY the ONLY element that can trigger the acceptance screen -->
+        <button 
+          id="yesBtn" 
+          type="button"
+          onclick="handleYesSuccess(event)" 
+          class="pulse-glow w-44 py-4 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold text-xl rounded-2xl shadow-xl active:scale-95 transition-transform duration-200 flex items-center justify-center gap-2 z-20 cursor-pointer">
+          <span>YES!</span>
+          <span>💍🥰</span>
+        </button>
+
+        <!-- NO Button: ONLY dodges cursor, NEVER navigates or accepts anything -->
+        <button 
+          id="noBtn" 
+          type="button"
+          onmouseenter="dodgeNo(event)"
+          onmouseover="dodgeNo(event)"
+          onpointerenter="dodgeNo(event)"
+          ontouchstart="dodgeNo(event)"
+          onclick="dodgeNo(event)"
+          class="w-44 py-4 px-6 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-base rounded-2xl shadow border border-gray-300 flex items-center justify-center gap-1 z-30 select-none cursor-pointer">
+          <span id="noBtnText">No 😢</span>
+        </button>
+      </div>
+
+      <!-- Live Teasing Hint Box -->
+      <div id="teaseBox" class="mt-4 min-h-[28px] text-xs md:text-sm font-semibold text-rose-600 italic opacity-0 transition-opacity duration-200">
+        "Oops! That button doesn't like being touched! 😜"
+      </div>
+    </section>
+
+    <!-- STEP 3: Celebration Screen (Only reachable via YES button) -->
+    <section id="step3" class="hidden opacity-0 transition-opacity duration-500 text-center">
+      <div class="relative inline-block mb-3">
+        <div class="w-24 h-24 mx-auto bg-gradient-to-tr from-pink-400 to-rose-500 rounded-full flex items-center justify-center text-5xl shadow-xl animate-pulse">
+          👰🤵
+        </div>
+        <span class="absolute -top-1 -right-1 text-3xl animate-bounce">💖</span>
+      </div>
+
+      <h2 class="text-3xl md:text-4xl font-black text-rose-600 mb-2">
+        YOU SAID YES! 🎉
+      </h2>
+      <p class="font-romantic text-2xl md:text-3xl text-gray-800 mb-4">
+        Forever and Always ❤️
+      </p>
+
+      <div class="bg-pink-50/95 border border-pink-200 rounded-2xl p-4 md:p-5 mb-5 text-gray-700 text-sm md:text-base leading-relaxed text-left shadow-sm">
+        <p class="font-semibold text-gray-900 mb-2 text-center text-lg" id="celebrationNameGreeting">
+          Congratulations! 🥂
+        </p>
+        <p class="mb-2">
+          🎉 <strong>Official Notice:</strong> You have formally and happily accepted the proposal!
+        </p>
+        <p class="text-rose-700 font-bold mb-2">
+          ⚠️ Terms &amp; Conditions:
+        </p>
+        <ul class="list-disc list-inside space-y-1 text-xs md:text-sm text-gray-600">
+          <li>No cancellations or returns 🚫</li>
+          <li>Unlimited hugs, food sharing, and endless love guaranteed 🍕❤️</li>
+          <li>You are officially stuck with me forever! 🥳💍</li>
+        </ul>
+      </div>
+
+      <button 
+        type="button"
+        onclick="triggerMoreCelebration()" 
+        class="py-3 px-6 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-rose-400/50 active:scale-95 transition text-sm">
+        Click for More Celebrations! 🎊
+      </button>
+    </section>
+
+  </main>
+
+  <script>
+    // Audio synthesizer for fun sound effects without external dependencies
+    const AudioEngine = {
+      ctx: null,
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      },
+      playEscapeSound() {
+        try {
+          this.init();
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const now = this.ctx.currentTime;
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(750, now + 0.1);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.11);
+        } catch (e) {}
+      },
+      playFanfare() {
+        try {
+          this.init();
+          const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+          const now = this.ctx.currentTime;
+          notes.forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const start = now + (idx * 0.08);
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.25, start);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.35);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(start);
+            osc.stop(start + 0.36);
+          });
+        } catch (e) {}
+      }
+    };
+
+    // Spawn floating background hearts
+    function spawnBackgroundHearts() {
+      const container = document.getElementById('heartContainer');
+      const emojis = ['💖', '💕', '💗', '💓', '✨', '🌸', '💍'];
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'floating-heart';
+        heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        heart.style.left = `${Math.random() * 95}%`;
+        heart.style.animationDuration = `${6 + Math.random() * 6}s`;
+        heart.style.animationDelay = `${Math.random() * 5}s`;
+        heart.style.fontSize = `${18 + Math.random() * 20}px`;
+        container.appendChild(heart);
+      }
+    }
+    spawnBackgroundHearts();
+
+    let partnerName = 'Sweetheart';
+    let escapeCount = 0;
+    let yesScale = 1.0;
+
+    const phrases = [
+      "No 😢",
+      "Are you sure? 🤔",
+      "Think again! 😜",
+      "Wrong button! 😂",
+      "Can't touch this! 💨",
+      "Try again! 🏃",
+      "Error: No not found! ❌",
+      "Just click YES! 🥰",
+      "Destiny says YES! ✨"
+    ];
+
+    const teasers = [
+      "Oops! That button is too fast! 💨",
+      "Nice try! But you can't click No! 😜",
+      "Look, the YES button is getting bigger! ❤️",
+      "There is literally no escape from my love! 💍",
+      "Give up and hit that big green YES button! 🥰"
+    ];
+
+    function handleNameSubmit(event) {
+      event.preventDefault();
+      const val = document.getElementById('partnerName').value.trim();
+      if (val) partnerName = val;
+
+      AudioEngine.init();
+
+      // Set greeting texts
+      document.getElementById('proposalHeadline').innerText = `${partnerName}, Will You Marry Me? 💍`;
+      document.getElementById('celebrationNameGreeting').innerText = `Congratulations, ${partnerName}! 🥂❤️`;
+
+      // Switch to Step 2
+      const step1 = document.getElementById('step1');
+      const step2 = document.getElementById('step2');
+      step1.classList.add('hidden');
+      step2.classList.remove('hidden');
+      setTimeout(() => step2.classList.remove('opacity-0'), 30);
+    }
+
+    // THE RUNAWAY LOGIC:
+    // This ONLY moves the No button away. It NEVER finishes the proposal.
+    let debounceTimer = null;
+    function dodgeNo(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      const noBtn = document.getElementById('noBtn');
+      const yesBtn = document.getElementById('yesBtn');
+      const noBtnText = document.getElementById('noBtnText');
+      const teaseBox = document.getElementById('teaseBox');
+
+      if (!noBtn || !yesBtn) return;
+
+      escapeCount++;
+      AudioEngine.playEscapeSound();
+
+      // Switch to fixed positioning so it freely flies around viewport
+      if (!noBtn.classList.contains('btn-escaping')) {
+        noBtn.classList.add('btn-escaping');
+      }
+
+      // Update funny text
+      const pIdx = Math.min(escapeCount, phrases.length - 1);
+      noBtnText.innerText = phrases[pIdx];
+
+      // Update teasing message
+      teaseBox.innerText = teasers[(escapeCount - 1) % teasers.length];
+      teaseBox.classList.remove('opacity-0');
+
+      // Make YES button grow bigger
+      yesScale = Math.min(1.8, yesScale + 0.08);
+      yesBtn.style.transform = `scale(${yesScale})`;
+
+      // Calculate safe position on screen
+      const btnWidth = noBtn.offsetWidth || 150;
+      const btnHeight = noBtn.offsetHeight || 50;
+      const margin = 20;
+
+      const maxX = window.innerWidth - btnWidth - margin;
+      const maxY = window.innerHeight - btnHeight - margin;
+
+      // Pick a new random spot
+      const randomX = Math.floor(Math.random() * (maxX - margin) + margin);
+      const randomY = Math.floor(Math.random() * (maxY - margin) + margin);
+
+      noBtn.style.left = `${Math.max(margin, randomX)}px`;
+      noBtn.style.top = `${Math.max(margin, randomY)}px`;
+    }
+
+    // STRICTLY THE ONLY HANDLER THAT MOVES TO THE SUCCESS SCREEN
+    function handleYesSuccess(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      AudioEngine.playFanfare();
+
+      // Remove the runaway button completely
+      const noBtn = document.getElementById('noBtn');
+      if (noBtn) {
+        noBtn.remove();
+      }
+
+      // Show Step 3
+      const step2 = document.getElementById('step2');
+      const step3 = document.getElementById('step3');
+
+      step2.classList.add('hidden');
+      step3.classList.remove('hidden');
+      setTimeout(() => step3.classList.remove('opacity-0'), 30);
+
+      triggerFullConfetti();
+    }
+
+    function triggerFullConfetti() {
+      if (typeof confetti === 'function') {
+        const count = 220;
+        const defaults = { origin: { y: 0.7 } };
+
+        function fire(particleRatio, opts) {
+          confetti(Object.assign({}, defaults, opts, {
+            particleCount: Math.floor(count * particleRatio)
+          }));
+        }
+
+        fire(0.25, { spread: 26, startVelocity: 55 });
+        fire(0.2, { spread: 60 });
+        fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+        fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+        fire(0.1, { spread: 120, startVelocity: 45 });
+      }
+    }
+
+    function triggerMoreCelebration() {
+      AudioEngine.playFanfare();
+      triggerFullConfetti();
+    }
+  </script>
+</body>
+</html>
